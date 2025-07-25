@@ -53,8 +53,8 @@ pick() {
   eval "desc=(\"\${${cat}_desc[@]}\")"
   echo "\n\033[1mSelect $cat:\033[0m"
   echo "0)  (custom $cat)"
-  for i in {1..${#opts[@]}}; do
-    printf '%-3d %s  —  %s\n' "$i)" "${opts[$i]}" "${desc[$i]}"
+  for ((i=1; i<=${#opts[@]}; i++)); do
+    printf '%-3s %s  —  %s\n' "${i})" "${opts[i]}" "${desc[i]}"
   done
   while true; do
     printf "Choice [0-%d]: " "${#opts[@]}"

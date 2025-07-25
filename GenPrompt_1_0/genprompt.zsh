@@ -5,7 +5,7 @@
 # Author: You (powered by ChatGPT)
 # ──────────────────────────────────────────────
 
-set -euo pipefail
+setopt errexit nounset pipefail
 
 # Paths
 GENPROMPT_HOME=${GENPROMPT_HOME:-"$HOME/GenPrompt_1_0"}
@@ -44,7 +44,16 @@ load_bank() {
   done < "$BANK_DIR/${name}.txt"
 }
 
+# Load prompt banks
 for cat in $categories; do load_bank "$cat"; done
+
+# Helpers for English articles (a/an)
+article_for() {
+  [[ "$1" =~ ^[aeiouAEIOU] ]] && echo "an" || echo "a"
+}
+
+# Skip further setup when running tests
+[[ -n "$GENPROMPT_TESTING" ]] && { return 0 2>/dev/null || exit 0; }
 
 # Interactive picker — no Bash features, all Zsh
 pick() {
@@ -54,7 +63,7 @@ pick() {
   echo "\n\033[1mSelect $cat:\033[0m"
   echo "0)  (custom $cat)"
   for i in {1..${#opts[@]}}; do
-    printf '%-3d %s  —  %s\n' "$i)" "${opts[$i]}" "${desc[$i]}"
+    printf '%-3s %s  —  %s\n' "$i)" "${opts[$i]}" "${desc[$i]}"
   done
   while true; do
     printf "Choice [0-%d]: " "${#opts[@]}"
@@ -84,11 +93,6 @@ mood=$(pick moods)
 style=$(pick styles)
 shot=$(pick shots)
 movement=$(pick movements)
-
-# Helpers for English articles (a/an)
-article_for() {
-  [[ "$1" =~ ^[aeiouAEIOU] ]] && echo "an" || echo "a"
-}
 
 # Grammar: subject/setting phrases
 subject_phrase=$subject
@@ -176,4 +180,4 @@ log_file="$LOG_DIR/$(date +%F).log"
 print -P "%F{240}🗄  Logged to $log_file%f"
 
 # Placeholder for modcheck integration
-# Uncomment below to enable moderation lo
+# Uncomment below to enable moderation logging

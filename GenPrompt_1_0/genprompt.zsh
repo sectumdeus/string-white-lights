@@ -53,7 +53,7 @@ article_for() {
 }
 
 # Skip further setup when running tests
-[[ -n "$GENPROMPT_TESTING" ]] && { return 0 2>/dev/null || exit 0; }
+[[ -n ${GENPROMPT_TESTING:-} ]] && { return 0 2>/dev/null || exit 0; }
 
 # Interactive picker — no Bash features, all Zsh
 pick() {
